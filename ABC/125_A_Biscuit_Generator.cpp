@@ -9,3 +9,4 @@ int main() {
     printf("%d\n", (t/a)*b);
     return 0;
 }
+/gocoedit
