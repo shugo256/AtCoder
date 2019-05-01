@@ -4,7 +4,7 @@
 
 #define MAX (int)2e5
 	
-//にぶたんver
+//にぶたんver  未完成
 
 using namespace std;
 typedef pair<char,int> P;
