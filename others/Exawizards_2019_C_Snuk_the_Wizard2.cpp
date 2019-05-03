@@ -43,4 +43,4 @@ int main() {
 	}
 	cout << b2 - a1 + (int)(j1==0) + (int)(j2==0) - 1 << '\n';
 	return 0;
-}
+}//わーい
