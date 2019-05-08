@@ -19,30 +19,32 @@ int main() {
         g[b].push_back(a);
     }
     queue<int> q;
-    for (int i=0; i<n; i++) {
-        if (g[i].size() == 1) {
-            q.push(i);
-        }
-    }
-    q.push(-1);
-    int max=0, count=0;
-    bool used[MAX]={0};
+    q.push(0);
+    int d[n];
+    fill(d, d+n, MAX);
+    d[0] = 0;
+    int k;
     while (q.size() > 0) {
-        int k = q.front(); q.pop();
-        if (q.size() > 0 && k == -1) {
-            q.push(-1);
-            max++;
-            count = 0;
-            continue;
-        }
+        k = q.front(); q.pop();
         for (size_t l=0; l<g[k].size(); l++) {
-            if (!used[g[k][l]]) {
-                used[g[k][l]] = true;
+            if (d[g[k][l]] == MAX) {
+                d[g[k][l]] = d[k] + 1;
                 q.push(g[k][l]);
-                count++;
             }
         }
     }
-    printf("%s\n", (max+count)%2 ? "First" : "Second");
+    q.push(k);
+    fill(d, d+n, MAX);
+    d[k] = 0;
+    while (q.size() > 0) {
+        k = q.front(); q.pop();
+        for (size_t l=0; l<g[k].size(); l++) {
+            if (d[g[k][l]] == MAX) {
+                d[g[k][l]] = d[k] + 1;
+                q.push(g[k][l]);
+            }
+        }
+    }
+    printf("%s\n", d[k]%3 != 1 ? "First" : "Second");
     return 0;
 }
