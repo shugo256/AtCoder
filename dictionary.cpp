@@ -175,6 +175,44 @@ struct uftree {
         return root(x) == root(y);
     }
 };
+// size付きver
+struct uftree_s {
+    int par[MAX_N], rank[MAX_N], size[MAX_N];
+    uftree_s(int N) {
+        for (int i = 0; i < N; i++) {
+            par[i]  = i;
+            rank[i] = 0;
+            size[i] = 1;
+        }
+    }
+    int root(int x) {
+        if (par[x] == x)
+            return x;
+        else {
+            int r         = root(par[x]);
+            size[x]       = size[par[x]];
+            return par[x] = r;
+        }
+    }
+    void unite(int x, int y) {
+        x = root(x);
+        y = root(y);
+        if (x == y) return;
+        if (rank[x] > rank[y])
+            par[y] = x;
+        else {
+            par[x] = y;
+            if (rank[x] == rank[y]) rank[y]++;
+        }
+        size[x] += size[y];
+        size[y] = size[x];
+    }
+    int tsize(int x) {
+        root(x);
+        return size[x];
+    }
+    bool same(int x, int y) { return root(x) == root(y); }
+};
 // 重み付きver
 struct uftree_w {
     int par[MAX_N], rank[MAX_N], w_dif[MAX_N]; //w_difは親との重みの差
@@ -217,5 +255,3 @@ struct uftree_w {
         return root(x) == root(y);
     }
 };
-//yeah!!!
-//wafoooooooo

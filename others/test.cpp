@@ -2,6 +2,6 @@
 
 
 int main() {
-    int i = (int)2e9 + 14;
-    printf("%d %d\n",i,3%i);
+    int a = 0, b = 2;
+    printf("%d\n",a^b);
 }
