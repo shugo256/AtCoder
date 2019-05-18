@@ -17,6 +17,15 @@ typedef pair<int,int> P;
 
 // アルファベット順
 
+//// C
+
+// コンビネーション
+long comb(long n, long k) {
+    if (n < k || k < 0) return 0;
+    if (k == 0 || n == k) return 1;
+    return comb(n - 1, k - 1) + comb(n - 1, k);
+}
+
 //// D
 
 // 二部グラフ判定
