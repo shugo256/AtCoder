@@ -4,8 +4,7 @@
 using namespace std;
 
 int main() {
-    int a = 1e9;
-    long b = (long)a * a;
-    cout << a << ' ' << b << '\n';
+    int a = 1000000001;
+    cout << a%2 << '\n';
     return 0;
 }
