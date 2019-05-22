@@ -3,36 +3,32 @@
 #include <queue>
 #include <vector>
 
+#define MAX 100010
+
 using namespace std;
 
-struct tv {
-    int s, t, c;
-};
-
-bool operator<(const tv& l, const tv& r) {
-    return l.s < r.s;
-}
+typedef pair<int,int> P;
 
 int main() {
     int n, c;
     cin >> n >> c;
-    tv progs[n];
-    for (auto &p:progs)
-        cin >> p.s >> p.t >> p.c;
-    sort(progs, progs+n);
-    auto compt = [](tv l, tv r) { return l.t > r.t; };
-    priority_queue<tv, vector<tv>, decltype(compt)> pq(compt);
-    for (auto p:progs) {
-        if (!pq.empty()) {
-            tv end = pq.top(); pq.pop();
-            if (end.t < p.s || (end.c == p.c && end.t == p.s)) {
-                pq.push({end.s, p.t, p.c});
-                continue;
-            }
-            pq.push(end);
-        }
-        pq.push(p);
+    vector<P> G[c];
+    for (int i=0; i<n; i++) {
+        int s, t, c;
+        cin >> s >> t >> c;
+        G[c-1].push_back({s, t});
     }
-    cout << pq.size() << '\n';
+    int total[MAX] = {0};
+    for (auto &row:G) {
+        int chan[MAX] = {0};
+        for (auto p:row)
+            for (int i=p.first; i<=p.second; i++) 
+                chan[i] = 1;
+        for (int i=0; i<MAX; i++) 
+            total[i] += chan[i];
+    }
+    int x = 0;
+    for (auto t:total) x = max(x, t);
+    cout << x << '\n';
     return 0;
 }

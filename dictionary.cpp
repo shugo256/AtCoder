@@ -19,8 +19,8 @@ typedef pair<int,int> P;
 
 //// C
 
-// コンビネーション
-long comb(long n, long k) {
+// nCk
+long comb(int n, int k) {
     if (n < k || k < 0) return 0;
     if (k == 0 || n == k) return 1;
     return comb(n - 1, k - 1) + comb(n - 1, k);
@@ -136,13 +136,13 @@ int partition(int n, int sum) {
     return dp[n][sum];
 }
 
-// べき乗 powのint高速化ver
-long powi(int x, int a) {
-    if (a == 0) return 1;
+// べき乗 powのint高速化ver 計算量はO(logn)
+long powi(int x, int n) {
+    if (n <= 0) return 1;
     else {
-        long xa = powi(x, a/2);
-        if (a%2 == 0) return xa*xa;
-        else return xa*xa*x;
+        long xn = powi(x, n/2);
+        if (n%2 == 0) return xn*xn;
+        else return xn*xn*x;
     }
 }
 
