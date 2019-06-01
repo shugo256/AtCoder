@@ -1,1 +1,1 @@
-あいう
+Atcoder Beginner Contest
