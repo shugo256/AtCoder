@@ -1,10 +1,14 @@
 #include <iostream>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
 int main() {
-    int a = 1000000001;
-    cout << a%2 << '\n';
+    multiset<long> alist;
+    alist.insert(1);
+    auto first = alist.begin();
+    alist.insert(0);
+    cout << (first == alist.begin()) << '\n';
     return 0;
 }

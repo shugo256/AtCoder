@@ -1,4 +1,3 @@
-
 #include <cstdio>
 #include <numeric>
 #include <algorithm>
@@ -19,8 +18,10 @@ typedef pair<int,int> P;
 
 //// C
 
-// nCk
-long comb(int n, int k) {
+//nC2 O(1)
+long comb2(long n) { return n * (n - 1) / 2; }
+// nCk O(max(n, k))
+long comb(long n, long k) {
     if (n < k || k < 0) return 0;
     if (k == 0 || n == k) return 1;
     return comb(n - 1, k - 1) + comb(n - 1, k);
@@ -45,9 +46,10 @@ bool dfs(int n, int c) {
 }
 
 // 各点への最短経路 dijkstra
-int d[MAX_N], N; //頂点kから各点への距離
+long d[MAX_N];  //頂点kから各点への距離
+int n; 
 void dijkstra(vector<P> G[], int k) { //Gは隣接行列 G[i][j].firstが距離, secondが向かう頂点名, kはスタートする頂点
-    fill(d, d+N, INF); d[k] = 0;
+    fill(d, d+n, INF); d[k] = 0;
     priority_queue< P, vector<P>, greater<P> > que;
     que.push(P(0, k));
     while (!que.empty()) {
@@ -91,13 +93,14 @@ ll lcm(ll N, ll M) {
 }
 
 // LIC 最長部分増加列
-void lic(int N) {
-    int dp[N], arr[N];
-    fill(dp, dp+N, INF);
-    for (int i=0; i<N; i++) {
-        *lower_bound(dp, dp + N, arr[i]) = arr[i]; // dp[lower_bound(dp, dp+N, arr[i])]と同じ
+int arr[n];
+void lic(int n) {
+    int dp[n];
+    fill(dp, dp+n, INF);
+    for (int i=0; i<n; i++) {
+        *lower_bound(dp, dp + n, arr[i]) = arr[i]; // dp[lower_bound(dp, dp+N, arr[i])]と同じ
     } // 等号もありならupper
-    printf("%ld\n", lower_bound(dp, dp + N, INF) - dp);
+    printf("%ld\n", lower_bound(dp, dp + n, INF) - dp);
 }
 
 //// O
@@ -123,7 +126,8 @@ bool operator == (const point& p, const point& q) {
 
 //// P
 
-// 分割数
+// 分割数 sum個のものをn個以下のグループに分ける方法
+// ex) sum=4,n=3なら 4=1+1+2=1+3=2+2=4で4通り
 int partition(int n, int sum) {
     int dp[n + 1][sum + 1];
     fill(dp[0], dp[n+1], 0);
@@ -136,7 +140,7 @@ int partition(int n, int sum) {
     return dp[n][sum];
 }
 
-// べき乗 powのint高速化ver 計算量はO(logn)
+// べき乗 powのint高速化ver
 long powi(int x, int n) {
     if (n <= 0) return 1;
     else {
@@ -159,35 +163,10 @@ bool IsPrime(long num, long powp) {
 //// U
 
 // Union-Find木 木の統合と同じ木に属すかの確認が可能 分割は不可
-struct uftree {
-    int par[MAX_N], rank[MAX_N];
-    uftree(int N) {
-        for (int i=0; i<N; i++) {
-            par[i] = i;
-            rank[i] = 0;
-        }
-    }
-    int root(int x) {
-        return par[x] == x ? x : par[x] = root(par[x]); // 高速化ポイント
-    }
-    void unite(int x, int y) {
-        x = root(x);
-        y = root(y);
-        if (x == y) return;
-        if (rank[x] > rank[y]) par[y] = x;
-        else {
-            par[x] = y;
-            if (rank[x] == rank[y]) rank[y]++;
-        }
-    }
-    bool same(int x, int y) {
-        return root(x) == root(y);
-    }
-};
 // size付きver
-struct uftree_s {
+struct uftree {
     int par[MAX_N], rank[MAX_N], size[MAX_N];
-    uftree_s(int N) {
+    uftree(int N) {
         for (int i = 0; i < N; i++) {
             par[i]  = i;
             rank[i] = 0;
@@ -216,7 +195,7 @@ struct uftree_s {
         size[x] += size[y];
         size[y] = size[x];
     }
-    int tsize(int x) {
+    int getsize(int x) {
         root(x);
         return size[x];
     }
