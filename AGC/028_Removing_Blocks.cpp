@@ -1,8 +1,7 @@
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
-
-///////     longをmodの計算をするように拡張
 
 #define MOD (long)(1e9 + 7)
 #define MAX 1000000  // 階乗をいくつまで計算するか
@@ -176,64 +175,19 @@ modlong modFact(long n) {
     return modlong(facts[n]);
 }
 
-//////      使用例
-
 int main() {
-    // 初期化方法 4パターン
-    // a:long型の値を引数に初期化
-    // b:定義時にlongを代入
-    // c:定義時にmodlongを代入
-    // d:値を初期化しない(この場合自動的に0が代入される)
-    modlong a(2), b = 3, c = a, d;
-
-    // 代入
-    // 直接longを代入することもできます。
-    // また上でc =
-    // aとしましたが、aを変更してもcには反映されません(つまりいつも通り)
-    a = 4, d = a;
-    cout << a << ' ' << b << ' ' << c << ' ' << d << '\n';  // -> 4 3 2 4
-
-    // 代入時や初期化時にちゃんとmodがかかります
-    a = (long)1e9 + 8;
-    cout << a << ' ' << modlong(-1) << '\n';  // -> 1 1000000006
-
-    // 四則演算もおてのもの
-    a = (long)1e9, b = (long)5e8 + 7, c = 2, d = 1;
-    cout << a + b << '\n';  // -> 500000000
-    cout << d - c << '\n';  // -> 1000000006
-    cout << b * c << '\n';  // -> 7
-    cout << d / c << '\n';  // -> 500000004 (逆元)
-
-    // ちなみに演算子の右側はlongでもok
-    cout << c + 3 << '\n';  // -> 6
-    // 3 + cはエラーになる(頑張ればできるようにできるけどコードがかざばる)
-    // 2 / cとかしたい場合は modlong(2)/c あるいは c.inv()*2 と書くと良い
-
-    // 逆元 べき乗 階乗
-    a = 2;
-    cout << a.inv() << '\n';     // -> 500000004
-    cout << a.pow(-2) << '\n';   // -> 250000002 (逆元の2乗)
-    cout << a.pow(10) << '\n';   // -> 1024
-    cout << a.pow(100) << '\n';  // -> 976371285
-    cout << a.fact() << '\n';    // -> 2
-
-    // += *= -= /=も作ったよ
-    a = 2;
-    a += (long)1e9 + 5;
-    cout << a << '\n';  // -> 0
-
-    // 比較もできる
-    a = 1, b = 2, c = -1;  // このときcは1000000006になる
-    if (a < b) cout << "hoge1" << '\n';
-    if (a + c == 0) cout << "hoge2" << '\n';
-    // -> hoge1
-    //    hoge2
-
-    // longへのキャスト
-    long l = a.tol();
-
-    // cinもいけるで
-    modlong input;
-    cin >> input;
-    cout << input.C(10) << '\n';  // コンビネーション
+    long n; cin >> n;
+    computeAll(n);
+    modlong a[n], invsum=0;
+    for (auto &ai:a) cin >> ai;
+    for (int i=1; i<=n; i++)
+        invsum += invs[i];
+    modlong ans=0, p = invsum;
+    for (int i = 0; i < n; i++) {
+        //cerr << p << ' ' << modlong(7) / 3 << '\n';
+        ans += a[i] * p * modFact(n);
+        p += invs[i+2] - invs[n-i];
+    }
+    cout << ans << '\n';
+    return 0;
 }

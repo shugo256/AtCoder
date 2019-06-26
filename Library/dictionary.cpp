@@ -69,9 +69,10 @@ void dijkstra(vector<P> G[], int k) { //Gは隣接行列 G[i][j].firstが距離,
 //// G
 
 // 最大公約数
-int gcd(int a, int b) {
+template <typename T>
+T gcd(T a, T b) {
     if (a > b) {
-        int buf = a;
+        T buf = a;
         a = b;
         b = buf;
     }
@@ -81,7 +82,8 @@ int gcd(int a, int b) {
 //// L
 
 // 最小公倍数
-ll lcm(ll N, ll M) {
+template <typename T>
+T lcm(T N, T M) {
     if (N<M) return lcm(M,N);
     ll product=N*M, buf;
     while(M != 0) {
@@ -150,14 +152,15 @@ long powi(int x, int n) {
     }
 }
 
-// 素数判定 2からfor分で回して行く powpはどこまでやるか エラトステネスの篩
-bool primes[1000]; //最初全部trueにしておく
-bool IsPrime(long num, long powp) {
-    if (primes[num]) {
-        for (long i = 2 * num; i <= powp; i += num)
-            primes[i] = false;
-    }
-    return primes[num];
+// 素数判定 2からfor分で回して行く limitはどこまでやるか エラトステネスの篩
+bool isPrime[100011];
+void computePrimes(int limit = 100010) {
+    assert(limit < 100011);                    // #include <cassert>
+    fill(isPrime, isPrime + limit + 1, true);  //最初全部trueにしておく
+    isPrime[0] = isPrime[1] = false;
+    for (int i = 2; i <= limit; i++)
+        if (isPrime[i])
+            for (int j = 2 * i; j <= limit; j += i) isPrime[j] = false;
 }
 
 //// U
@@ -165,8 +168,11 @@ bool IsPrime(long num, long powp) {
 // Union-Find木 木の統合と同じ木に属すかの確認が可能 分割は不可
 // size付きver
 struct uftree {
-    int par[MAX_N], rank[MAX_N], size[MAX_N];
+    int *par, *rank, *size;
     uftree(int N) {
+        par = new int[(size_t)N];
+        rank = new int[(size_t)N];
+        size = new int[(size_t)N];
         for (int i = 0; i < N; i++) {
             par[i]  = i;
             rank[i] = 0;
@@ -203,8 +209,11 @@ struct uftree {
 };
 // 重み付きver
 struct uftree_w {
-    int par[MAX_N], rank[MAX_N], w_dif[MAX_N]; //w_difは親との重みの差
+    int *par, *rank, *w_dif; //w_difは親との重みの差
     uftree_w(int N) {
+        par = new int[(size_t)N];
+        rank = new int[(size_t)N];
+        w_dif = new int[(size_t)N];
         for (int i=0; i<N; i++) {
             par[i] = i;
             rank[i] = 0;

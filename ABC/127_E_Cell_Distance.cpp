@@ -84,9 +84,9 @@ public:
 
     // ++ -- 前付きと後ろ付き
     void operator++() { ++this->val; }
-    void operator++(int a) { this->val++; }
+    void operator++(int a) { a=0; this->val++; } // a=0はunused parameterのwarningを消すため
     void operator--() { --this->val; }
-    void operator--(int a) { this->val--; }
+    void operator--(int a) { a=0; this->val--; }
 
     // 四則演算&代入
     void operator+=(const modlong &r) { *this = *this + r; }
