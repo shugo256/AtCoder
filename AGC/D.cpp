@@ -6,26 +6,45 @@
 
 using namespace std;
 
-long dfs(size_t i, vector<int>v) {
-    if (i == 2) return v[0] + v[1];
-    vector<int> next(v);
-    next[0] += next[1];
-    next[2] += next[1];
-    next.erase(next.begin()+1);
-    long a = dfs(i-1, next);
-    next = vector<int>(v);
-    next[i-3] += next[i-2];
-    next[i-1] += next[i-2];
-    next.erase(next.begin() + i-2);
-    long b = dfs(i - 1, next);
-    return min(a, b);
+int n, m;
+int a[101][101],
+    b[101][101]; // n m
+bool open[101][101], // m n i列目で商がjとなるものをまだ使っていないかどうか
+     used[101]; // m
+bool dfs(int i=0, int j=0) {
+    if (i == n) return true;
+    else if (j == m) return dfs(i+1, 0);
+    else {
+        if (j == 0) fill(used, used + m, false);
+        for (int k=0; k<m; k++) {
+            if (used[k]) continue;
+            if (open[i][a[i][k] / m]) {
+                open[i][a[i][k] / m] = false;
+                if (dfs(i, j+1)) {
+                    b[i][j] = a[i][k];
+                    return true;
+                }
+                open[i][a[i][k] / m] = true;
+            }
+        }
+    }
+    return false;
 }
 
 int main() {
-    size_t n;
-    cin >> n;
-    vector<int> a(n);
-    for (auto &ai:a) cin >> ai;
-    cout << dfs(n, a) << '\n';
+    cin >> n >> m;
+    for (auto &ai:a) {
+        for (auto &aij:ai) {
+            cin >> aij;
+        } 
+    }
+    fill(open[0], open[m], true);
+    dfs();
+    for (auto &bi:b) {
+        for (auto &bij:bi) {
+            cout << bij << ' ';
+        }
+        cout << '\0' << '\n';
+    }
     return 0;
 }

@@ -7,8 +7,9 @@
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    cout << n << '\n';
+    int a;
+    string s;
+    cin >> a >> s;
+    cout << (a >= 3200 ? s : "red") << '\n';
     return 0;
 }

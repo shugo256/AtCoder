@@ -7,8 +7,8 @@
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    cout << n << '\n';
+    int a, b;
+    cin >> a >> b;
+    cout << max({a+b, a-b, a*b}) << '\n';
     return 0;
 }

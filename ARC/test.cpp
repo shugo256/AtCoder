@@ -4,10 +4,6 @@
 using namespace std;
 
 int main() {
-    int a = 3;
-    cout << a << '\n';
-    a ^= 7;
-    cout << a << '\n';
-    long arr[200000] = {0};
-    cout << arr[3] << '\n';
+    int a = 3, b = 1, c = 2, d;
+    cout << (d = max(a, b), max(c, d)) << endl;
 }

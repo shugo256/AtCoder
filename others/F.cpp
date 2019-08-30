@@ -4,6 +4,8 @@
 #include <queue>
 #include <string>
 
+#define long long long
+
 using namespace std;
 
 int main() {
