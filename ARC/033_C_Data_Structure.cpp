@@ -1,16 +1,14 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <queue>
+#include <string>
+
+using ll = long long;
 
 using namespace std;
 
-/*
-verified on 2019/9/7
-https://atcoder.jp/contests/arc033/submissions/7367945
-*/
-
 // 和以外はseg木でよくねという発想の元、和のみを実装
-#include <cassert>
 template <typename T>
 class BIT {
     const int n;
@@ -22,7 +20,6 @@ public:
     // v[a] += w
     template <typename ID>
     void add(ID a, T w) {
-        assert(0 <= a && a < n);
         for (int i = (int)a; i < n; i |= (i + 1)) 
             tree[(size_t)i] += w;
     }
@@ -30,7 +27,6 @@ public:
     // v[0] + v[1] + ... + v[a-1]
     template <typename ID>
     T sum(ID a) {
-        assert(0 <= a && a < n);
         T res = 0;
         for (int i = (int)a - 1; i >= 0; i = (i & (i + 1)) - 1)
             res += tree[(size_t)i];
@@ -59,3 +55,21 @@ public:
     template <typename ID>
     void pop(ID a) { add(a, -1); }
 };
+
+#define MAX 200010
+
+int main() {
+    int q;
+    cin >> q;
+    BIT<int> bit(MAX);
+    for (int i=0; i<q; i++) {
+        int t, x; cin >> t >> x;
+        if (t == 1) bit.push(x);
+        else {
+            int lb = bit.lower_bound(x);
+            cout << lb << '\n';
+            bit.pop(lb);
+        }
+    }
+    return 0;
+}

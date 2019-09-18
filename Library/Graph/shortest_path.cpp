@@ -14,7 +14,7 @@
 using namespace std;
 
 /*
-verified in 2019/8/12
+verified on 2019/8/12
 https://atcoder.jp/contests/abc137/submissions/6863681
 */
 
@@ -82,7 +82,7 @@ void dijkstra(int k) { //Gは隣接行列 G[i][j].firstが距離, secondが向�
 
 
 /*
-verified in 2019/8/21
+verified on 2019/8/21
 https://codeforces.com/contest/1204/submission/59164946
 */
 

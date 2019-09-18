@@ -18,41 +18,6 @@ typedef pair<int,int> P;
 
 //// B
 
-//ベルマンフォード
-int n, m;
-long d[MAX_N];
-bool negative[MAX_N];
-struct edge {
-    long from, to, cost;
-};
-vector<edge> edges;  // 長さM
-// ベルマンフォード法でstartから各点までの最短距離を計算する O(MN)
-// checkLoop=trueかつ負のループがある場合は負のループにより最短距離が
-// -INFになってしまう点を検出し、negativeに格納
-void bellmanFord(int start, bool checkLoop = false) {
-    fill(d, d + n, INF);
-    fill(negative, negative + n, false);
-    d[start] = 0;
-    bool negloop = false;
-    for (int i = 1; i < n; i++) {
-        for (auto e : edges) {
-            if (d[e.to] > d[e.from] + e.cost) {
-                d[e.to] = d[e.from] + e.cost;
-                if (i == n - 1) negloop = true;
-            }
-        }
-    }
-    if (!checkLoop || !negloop) return;
-    for (int i = 0; i < n; i++) {
-        for (auto e : edges) {
-            if (d[e.to] > d[e.from] + e.cost) {
-                d[e.to] = d[e.from] + e.cost;
-                negative[e.to] = true;
-            }
-        }
-    }
-}
-
 //// C
 
 //nC2 O(1)
@@ -80,29 +45,6 @@ bool dfs(int n, int c) {
             return false; 
     }
     return true;
-}
-
-// 各点への最短経路 dijkstra
-long d[MAX_N];  //頂点kから各点への距離
-vector<P> G[MAX_N]; //隣接行列
-int n; 
-void dijkstra(int k) { //Gは隣接行列 G[i][j].firstが距離, secondが向かう頂点名, kはスタートする頂点
-    fill(d, d+n, INF); d[k] = 0;
-    priority_queue< P, vector<P>, greater<P> > que;
-    que.push(P(0, k));
-    while (!que.empty()) {
-        P p = que.top(); que.pop();
-        int now = p.second;
-        if (d[now] < p.first) continue;
-        for (auto g:G[now]) {
-            int to = g.second;
-            long newd = g.first + d[now];
-            if (d[to] > newd) {
-                d[to] = newd;
-                que.push(P(d[to], to));
-            }
-        }
-    }
 }
 
 //// G

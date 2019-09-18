@@ -1,16 +1,16 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <queue>
+#include <string>
+#include <cmath>
+#include <cassert>
+
+using ll = long long;
 
 using namespace std;
 
-/*
-verified on 2019/9/7
-https://atcoder.jp/contests/arc033/submissions/7367945
-*/
-
 // 和以外はseg木でよくねという発想の元、和のみを実装
-#include <cassert>
 template <typename T>
 class BIT {
     const int n;
@@ -59,3 +59,51 @@ public:
     template <typename ID>
     void pop(ID a) { add(a, -1); }
 };
+
+using P = pair<int, int>;
+
+int main() {
+    string s;
+    cin >> s;
+    int n = s.size();
+    int cnt[26] = {0};
+    for (auto &c:s) cnt[c-'a']++;
+    queue<int> pos[26];
+    vector<P> r;
+    int move[n], m=0;
+    fill(move, move+n, -1);
+    for (int i=0; i<n; i++) {
+        int ci = s[i] - 'a';
+        if (pos[ci].size() < cnt[ci] / 2) {
+            pos[ci].push(m);
+            move[i] = m;
+            m++;
+        }
+        else
+            r.push_back({ci, i});
+    }
+    reverse(r.begin(), r.end());
+    bool even = (n%2 == 0);
+    for (auto p:r) {
+        if (pos[p.first].empty()) {
+            if (even) {
+                cout << -1 << '\n';
+                return 0;
+            }
+            even = true;
+            move[p.second] = n / 2;
+        } else {
+            int tar = pos[p.first].front();
+            pos[p.first].pop();
+            move[p.second] = n - 1 - tar;
+        }
+    }
+    BIT<int> bit(n);
+    long ans = 0;
+    for (int i=0; i<n; i++) {
+        ans += i - bit.sum(move[i]);
+        bit.push(move[i]);
+    }
+    cout << ans << '\n';
+    return 0;
+}

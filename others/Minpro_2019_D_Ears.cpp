@@ -3,27 +3,21 @@
 
 using namespace std;
 
-//いったん諦め
-
 int main() {
     int l;
     cin >> l;
-    int a[l];
-    for (auto &ai:a) cin >> ai;
-    int suml[l+1], sumr[l+1],
-        oddl[l+1], oddr[l+1];
-    suml[0] = oddl[0] = 0;
-    sumr[l] = oddr[l] = 0;
+    long dp[l+1][5];
+    fill(dp[0], dp[l+1], 0);
     for (int i=0; i<l; i++) {
-        oddl[i+1] = oddl[i] + (a[i] % 2);
-        oddr[l-i-1] = oddr[l-i] + (a[l-i-1] % 2);
+        long a; cin >> a;
+        long best = 1e18;
+        for (int j=0; j<5; j++) {
+            dp[i+1][j] = best = min(best, dp[i][j]);
+            if (j == 0 || j == 4) dp[i+1][j] += a;
+            else if (j == 2) dp[i+1][j] += (a+1) % 2;
+            else dp[i+1][j] += a % 2 + (a == 0 ? 2 : 0);
+        }
     }
-    int best = 200010;
-    for (int i=0; i<l; i++) {
-        int oe = oddl[i] + l - i - oddr[i],
-            eo = oddr[i] + l - i - oddl[i];
-        best = min({best, oe, eo}); 
-    }
-    cout << best << '\n';
+    cout << min({dp[l][0], dp[l][1], dp[l][2], dp[l][3], dp[l][4]}) << '\n';
     return 0;
 }
