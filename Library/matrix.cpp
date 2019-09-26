@@ -3,6 +3,8 @@
 
 using namespace std;
 
+using ll = long long;
+
 #include <cassert>
 template <typename T>
 class matrix {
@@ -18,9 +20,11 @@ public:
     matrix(int _h, int _w, T init=0) : body((size_t)_h, vector<T>((size_t)_w, init)), h(_h), w(_w) {
         assert(check());
     }
-    // n x nの単位行列
-    matrix(int _n) : matrix(_n, _n, 0) {
-        for (size_t i=0; i<(size_t)_n, i++) body[i][i] = 1;
+    // n x nの単位行列 matrix::I(n)でよべる
+    static matrix I(int _n) {
+        matrix m(_n, _n);
+        for (size_t i=0; i<(size_t)_n, i++) m[i][i] = 1;
+        return m;
     }
 
     int shape(bool i) { return i ? w : h };
@@ -44,6 +48,28 @@ public:
         for (size_t i=0; i<(size_t)h; i++)
             for (size_t j=0; j<(size_t)w; j++)
                 res[i][j] = body[i][j] - r[i][j];
+    }
+    matrix &operator*(const matrix &r) {
+        assert(w == r.h);
+        matrix res(h, r.w);
+        for (int i=0; i<h; i++) {
+            for (int j=0; j<r.w; j++) {
+                for (int k=0; k<w; k++) {
+                    res[i][j] = body[i][k] * r[k][j];
+                }
+            }
+        }
+        return res;
+    }
+    T det() {
+        assert(w == h);
+        
+    }
+    matrix &inv() {
+        matrix(h, w)
+    }
+    matrix &operator^(const ll k) {
+
     }
 
     friend ostream &operator<<(ostream &os, matrix &out) {

@@ -1,22 +1,26 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#include <queue>
+#include <string>
+
+using ll = long long;
 
 using namespace std;
 
-//断念...
+long s(long n) {
+    long res = 0;
+    for ( ; n > 0; n /= 10) res += n % 10;
+    return res;
+}
 
 int main() {
-    long k;
+    int k;
     cin >> k;
-    long n = 0, d = 1, s = 0;
+    long n = 0, r = 1;
     for (int i=0; i<k; i++) {
-        if (n / (10*d) == (n + d) / (10*d)) s++;
-        else if ((n + d) > (s - 8) * d) {
-            s++;
-            d *= 10;
-        } else s -= 8;
-        n += d;
-        cerr <<  s << ' ';
+        if ((n + r) >  s(n + r) * r) r *= 10;
+        n += r;
         cout << n << '\n';
     }
     return 0;

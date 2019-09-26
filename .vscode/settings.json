@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "utility": "cpp",
+        "vector": "cpp",
+        "iostream": "cpp",
+        "set": "cpp",
+        "queue": "cpp",
+        "algorithm": "cpp",
+        "iosfwd": "cpp",
+        "__hash_table": "cpp",
+        "unordered_map": "cpp",
+        "*.snippet": "cpp"
+    }
+}
