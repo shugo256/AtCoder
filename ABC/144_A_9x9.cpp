@@ -4,13 +4,13 @@
 #include <queue>
 #include <string>
 
-#define long long long
+using ll = long long;
 
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    cout << n << '\n';
+    int a, b;
+    cin >> a >> b;
+    cout << (a < 10 && b < 10 ? a * b : -1) << '\n';
     return 0;
 }

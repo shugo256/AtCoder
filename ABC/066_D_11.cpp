@@ -180,21 +180,21 @@ modlong modFact(long n) {
     return modlong(facts[n]);
 }
 
-/*
-BITっぽい？
-*/
-
 int main() {
-    int n, k;
-    cin >> n >> k;
-    vector<int> bro(1, -1);
-    int r;
-    for (int i=1; i*i<=n; (r=i, i++))
-        bro.push_back(n / i);
-    bro.push_back(r);
-    modlong dp[k+1][r+1];
-    fill(dp[0], dp[k+1], 0);
-    dp[0][1] = 1;
-    cout << n << '\n';
+    modlong n;
+    cin >> n;
+    int appear[n.tol()+1];
+    modlong sides;
+    fill(appear, appear+n.tol()+1, -1);
+    for (int i=0, a; i<=n.tol(); i++) {
+        cin >> a;
+        if (appear[a] >= 0) {
+            sides = n - i + appear[a];
+            break;
+        }
+        appear[a] = i;
+    }
+    for (modlong i=1; i<=n+1; i++) 
+        cout << (n+1).C(i) - sides.C(i-1) << '\n';
     return 0;
 }

@@ -8,7 +8,7 @@ using ll = long long;
 
 using namespace std;
 
-#define MOD (long)(1e9 + 7)
+#define MOD (long)(998244353)
 #define MAX 1000000  // 階乗をいくつまで計算するか
 
 class modlong;
@@ -180,21 +180,15 @@ modlong modFact(long n) {
     return modlong(facts[n]);
 }
 
-/*
-BITっぽい？
-*/
-
 int main() {
-    int n, k;
-    cin >> n >> k;
-    vector<int> bro(1, -1);
-    int r;
-    for (int i=1; i*i<=n; (r=i, i++))
-        bro.push_back(n / i);
-    bro.push_back(r);
-    modlong dp[k+1][r+1];
-    fill(dp[0], dp[k+1], 0);
-    dp[0][1] = 1;
-    cout << n << '\n';
+    long n, a, b, k;
+    cin >> n >> a >> b >> k;
+    modlong ans=0;
+    for (int i=0; i<=n; i++) {
+        if ((k - i*a) % b || (k - i*a) / b > n) continue;
+        int j = (k - i*a) / b;
+        ans += modlong(n).C(i) * modlong(n).C(j);
+    }
+    cout << ans << '\n';
     return 0;
 }

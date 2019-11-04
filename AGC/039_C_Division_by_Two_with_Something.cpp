@@ -3,12 +3,13 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <bitset>
 
 using ll = long long;
 
 using namespace std;
 
-#define MOD (long)(1e9 + 7)
+#define MOD (long)(998244353)
 #define MAX 1000000  // 階乗をいくつまで計算するか
 
 class modlong;
@@ -180,21 +181,39 @@ modlong modFact(long n) {
     return modlong(facts[n]);
 }
 
-/*
-BITっぽい？
-*/
+#define MAX_N 200000
+using bs = bitset<MAX_N>;
+
+int n;
+modlong from_bs(bs x) {
+    modlong ans=0, pow=1;
+    for (int i=0; i<n; i++) {
+        if (x[i]) ans += pow;
+        pow *= 2;
+    }
+    return ans;
+}
 
 int main() {
-    int n, k;
-    cin >> n >> k;
-    vector<int> bro(1, -1);
-    int r;
-    for (int i=1; i*i<=n; (r=i, i++))
-        bro.push_back(n / i);
-    bro.push_back(r);
-    modlong dp[k+1][r+1];
-    fill(dp[0], dp[k+1], 0);
-    dp[0][1] = 1;
-    cout << n << '\n';
+    bs x;
+    cin >> n >> x;
+    modlong ans = 0, used[n+1];
+    fill(used, used+n+1, 0);
+    for (int i=n; i>0; i--) {
+        if (i % 2 == 1 && n % i == 0) {
+            int res = 1, step = n / i;
+            for (int j = step+1; j<=n; j++) {
+                bool ref = x[n - 1 - (j - 1) % step] ^ (((j - 1) / step) % 2);
+                if (x[n - j] > ref) 
+                    break;
+                else if (x[n - j] < ref)
+                    res = 0;
+            }
+            modlong add = from_bs(x >> (n - step)) + (res ? 1 : 0) - used[step];
+            ans += add * step * 2;
+            for (int k=step; k<=n; k+=step) used[k] += add;
+        }
+    }
+    cout << ans << '\n';
     return 0;
 }

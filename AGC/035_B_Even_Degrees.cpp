@@ -9,9 +9,11 @@ using namespace std;
 
 using ll = long long;
 
-int par[100010], child[100010] = {0};
+using P = pair<int, int>;
+#define fi first
+#define se second
+
 set<int> G[100010];
-queue<int> q, bottoms;
 
 int main() {
     int n, m;
@@ -26,39 +28,33 @@ int main() {
         G[a].insert(b);
         G[b].insert(a);
     }
-    fill(par, par+n, -1);
-    par[0] = 0;
-    q.push(0);
-    bool visited[100010] = {0};
-    while (!q.empty()) {
-        int f = q.front(); q.pop();
-        for (auto g:G[f]) {
-            if (visited[g]) continue;
-            visited[g] = true;
-            child[f]++;
-            par[g] = f;
-            q.push(g);
-        }
-    }
-    set<int> ans[n];
-    for (int i=0; i<n; i++)
-        if (child[i] == 0)
-            bottoms.push(i);
-    while (!bottoms.empty()) {
-        int b = bottoms.front(); bottoms.pop();
-        for (auto g:G[b]) {
-            if (g == par[b] && G[b].size() % 2) {
-                ans[g].insert(b);
-            } else if (ans[g].find(b) != ans[g].end()) {
-                ans[b].insert(g);
-                G[g].erase(b);
+    set<P> s;
+    for (int i=0; i<n; i++) s.insert(P{G[i].size(), i});
+    vector<P> ans;
+    vector<int> erlist;
+    int deg[n];
+    fill(deg, deg+n, 0);
+    for (int j; !s.empty(); ) {
+        j = s.begin()->se;
+        s.erase(s.begin());
+        erlist.clear();
+        for (auto &g:G[j]) {
+            if ((deg[j] & 1) == 0) {
+                ans.push_back(P{g+1, j+1});
+                deg[g]++;
+            } else {
+                ans.push_back(P{j+1, g+1});
+                deg[j]++;
             }
+            erlist.push_back(g);
         }
-        child[par[b]]--;
-        if (b > 0 && child[par[b]] == 0) bottoms.push(par[b]);
+        for (auto &e:erlist) {
+            s.erase(P{G[e].size(), e});
+            G[e].erase(j);
+            s.insert(P{G[e].size(), e});
+        }
+        //cerr << j << ' ' << G[j].size() << '\n';
     }
-    for (int i=0; i<n; i++)
-        for (auto g:ans[i])
-            cout << i+1 << ' ' << g+1 << '\n';
+    for (auto &ai:ans) cout << ai.fi << ' ' << ai.se << '\n';
     return 0;
 }

@@ -8,8 +8,8 @@ using ll = long long;
 
 using namespace std;
 
-#define MOD (long)(1e9 + 7)
-#define MAX 1000000  // 階乗をいくつまで計算するか
+#define MOD (long)(998244353)
+#define MAX 10000001  // 階乗をいくつまで計算するか
 
 class modlong;
 void computeAll(long n);
@@ -180,21 +180,22 @@ modlong modFact(long n) {
     return modlong(facts[n]);
 }
 
-/*
-BITっぽい？
-*/
-
 int main() {
-    int n, k;
-    cin >> n >> k;
-    vector<int> bro(1, -1);
-    int r;
-    for (int i=1; i*i<=n; (r=i, i++))
-        bro.push_back(n / i);
-    bro.push_back(r);
-    modlong dp[k+1][r+1];
-    fill(dp[0], dp[k+1], 0);
-    dp[0][1] = 1;
-    cout << n << '\n';
+    int n;
+    cin >> n;
+    // modlong dp[n/2+1][3];
+    // fill(dp[0], dp[n/2+1], 0);
+    // dp[0][0] = 1;
+    // for (int i=0; i<n/2; i++) {
+    //     dp[i+1][0] = dp[i][0] * 2;
+    //     dp[i+1][1] = dp[i][0] + dp[i][1] * 3;
+    //     dp[i+1][2] = dp[i][1] + dp[i][2] * 3;
+    // }
+    // cout << modlong(3).pow(n) - (dp[n/2][1] + dp[n/2][2]) * 2 << '\n';
+    modlong ans = modlong(3).pow(n);
+    for (int i=0; i<n/2; i++) {
+        ans -= modComb(n, i) * modlong(2).pow(i+1);
+    }
+    cout << ans << '\n';
     return 0;
 }
