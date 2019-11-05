@@ -183,15 +183,6 @@ modlong modFact(long n) {
 int main() {
     int n;
     cin >> n;
-    // modlong dp[n/2+1][3];
-    // fill(dp[0], dp[n/2+1], 0);
-    // dp[0][0] = 1;
-    // for (int i=0; i<n/2; i++) {
-    //     dp[i+1][0] = dp[i][0] * 2;
-    //     dp[i+1][1] = dp[i][0] + dp[i][1] * 3;
-    //     dp[i+1][2] = dp[i][1] + dp[i][2] * 3;
-    // }
-    // cout << modlong(3).pow(n) - (dp[n/2][1] + dp[n/2][2]) * 2 << '\n';
     modlong ans = modlong(3).pow(n);
     for (int i=0; i<n/2; i++) {
         ans -= modComb(n, i) * modlong(2).pow(i+1);
