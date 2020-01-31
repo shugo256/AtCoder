@@ -9,6 +9,8 @@ http://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=3840559
 using namespace std;
 
 
+/* ここからスニペット */
+
 #include <functional>
 #include <limits>
 
@@ -55,7 +57,7 @@ class SegmentTree {
         ) {}
 
     SegmentTree(int _n, string mode, function<T(int, T)> _update_f = CHANGE_I)
-        : SegmentTree
+        : SegmentTree(
             _n, 
             mode == "max" ? numeric_limits<T>::lowest() : 
            (mode == "min" ? numeric_limits<T>::max() :
@@ -101,6 +103,8 @@ SegmentTree(n, def, op_func, [up_func])
 SegmentTree(n, def, mode, [up_func])
 SegmentTree(n, mode, [up_func])
 */
+
+/* ここまでスニペット */
 
 int main() {
     int n, q;

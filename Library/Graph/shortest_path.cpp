@@ -7,9 +7,14 @@
 
 
 #include <algorithm>
+#include <queue>
 
 #define MAX_N 100000
 #define INF 100000000000000
+
+using P = pair<int, int>;
+#define fi first
+#define se second
 
 using namespace std;
 

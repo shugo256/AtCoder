@@ -3,6 +3,7 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <cmath>
 
 using ll = long long;
 
@@ -180,21 +181,77 @@ modlong modFact(long n) {
     return modlong(facts[n]);
 }
 
-/*
-BITっぽい？
-*/
+// 和以外はseg木でよくねという発想の元、和のみを実装
+#include <cassert>
+template <typename T>
+class BIT {
+    const int n;
+    vector<T> tree;
+
+public:
+    BIT(int _n) : n(_n), tree((size_t)_n, 0) {}
+
+    // v[a] += w
+    template <typename ID>
+    void add(ID a, T w) {
+        assert(0 <= a && a < n);
+        for (int i = (int)a; i < n; i |= (i + 1)) 
+            tree[(size_t)i] += w;
+    }
+
+    // v[0] + v[1] + ... + v[a-1]
+    template <typename ID>
+    T sum(ID a) {
+        assert(0 <= a && a <= n);
+        T res = 0;
+        for (int i = (int)a - 1; i >= 0; i = (i & (i + 1)) - 1)
+            res += tree[(size_t)i];
+        return res;
+    }
+
+    // 総和
+    T sum() { return sum(n); }
+
+    // v[0] + v[1] + ... + v[a] >= w なる最小のa
+    int lower_bound(T w) {
+        int x = 0, beki = 1;
+        for (int _n=n; _n>0; _n>>=1) beki <<= 1;
+        for (int k=beki; k>0; k>>=1) {
+            if (x + k <= n && tree[(size_t)(x + k - 1)] < w) {
+                w -= tree[(size_t)(x + k - 1)];
+                x += k;
+            }
+            //cerr << k << ' ' << x << ' ' << tree[x] << '\n';
+        }
+        return x;
+    }
+
+    // set(被りなし)としての機能を見やすく
+    // ただし同じものをたとえば二回pushする場合、値が+2となって一回のpopでは消えないというバグあり
+    template <typename ID>
+    void push(ID a) { add(a, 1); }
+
+    template <typename ID>
+    void pop(ID a) { add(a, -1); }
+};
 
 int main() {
-    int n, k;
+    long n, k;
     cin >> n >> k;
-    vector<int> bro(1, -1);
-    int r;
-    for (int i=1; i*i<=n; (r=i, i++))
-        bro.push_back(n / i);
-    bro.push_back(r);
-    modlong dp[k+1][r+1];
-    fill(dp[0], dp[k+1], 0);
-    dp[0][1] = 1;
-    cout << n << '\n';
+    long r = (int) sqrt(n);
+    vector<BIT<modlong>> dp_bit(k+1, BIT<modlong>(r)), dp_inv(k+1, BIT<modlong>(r));
+    dp_bit[0].add(0, 1);
+    long inv_cnt[r], prev = r;
+    for (long i=0; i<r; i++) {
+        inv_cnt[i] = n / (r - i) - prev;
+        prev = n / (r - i);
+    }
+    for (long i=0; i<k; i++) {
+        for (int j=0; j<r; j++) {
+            dp_bit[i+1].add(j, dp_bit[i].sum() + dp_inv[i].sum(r - j));
+            dp_inv[i+1].add(j, dp_bit[i].sum(r - j) * inv_cnt[j]);
+        }
+    }
+    cout << dp_bit[k].sum() + dp_inv[k].sum() << '\n';
     return 0;
 }

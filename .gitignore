@@ -1,3 +1,5 @@
-*.pdf
-*.out
-.vscode/*
+*
+!ABC/*
+!ARC/*
+!AGC/*
+!others/*
