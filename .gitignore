@@ -1,6 +1,4 @@
 *
-!.gitignore
-!ABC/*.cpp
-!ARC/*.cpp
-!AGC/*.cpp
-!others/*.cpp
+!/*/
+/*/*
+!/*/*.cpp
