@@ -1,6 +1,10 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <queue>
 #include <string>
+
+using ll = long long;
 
 using namespace std;
 
@@ -170,8 +174,12 @@ private:
 int main() {
     string s;
     cin >> s;
-    // s = "kmjljljumc";
     SuffixArray<char> sa(s);
-    for (auto &sai:sa) cout << s.substr(sai) << '\n';
+    sa.construct_lcp();
+    ll n = s.size(),
+       ans = 0;
+    for (ll i=0; i<n; i++) ans += (n-i) * (n-i+1) / 2;
+    for (auto &li:sa.lcp) ans -= (ll)li * (li+1) / 2;
+    cout << ans << '\n';
     return 0;
 }

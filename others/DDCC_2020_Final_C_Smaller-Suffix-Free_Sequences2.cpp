@@ -1,6 +1,11 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <queue>
 #include <string>
+#include <set>
+
+using ll = long long;
 
 using namespace std;
 
@@ -110,9 +115,9 @@ private:
             // sa-isを再帰的に用いる
             SuffixArray<size_t> next(next_s, n+1);
 
-            for (size_t i=1; i<lmslen; i++)
-                lms[i] = aligned[(size_t)next[i]];
-            lms[0] = len;
+            for (size_t i=0; i<lmslen-1; i++)
+                lms[i] = aligned[(size_t)next[lmslen-1-i]];
+            lms[lmslen-1] = len;
         } else {
             for (auto i:aligned) 
                 sa[i] = 0; // saを0リセット
@@ -125,8 +130,6 @@ private:
 
     // induced sortの3ステップを行う
     void induced_sort() {
-
-        reverse(lms.begin(), lms.end());
 
         // step1:LMSをひとまず書き込んでいく
         for (auto i:lms) {
@@ -168,10 +171,21 @@ private:
 
 
 int main() {
-    string s;
-    cin >> s;
-    // s = "kmjljljumc";
-    SuffixArray<char> sa(s);
-    for (auto &sai:sa) cout << s.substr(sai) << '\n';
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (auto &ai:a) cin >> ai;
+    SuffixArray<int> sa(a);
+    set<int> s;
+    s.insert(0);
+    int ans[n];
+    for (int i=n-1; i>=0; i--) {
+        auto [itr, _] = s.insert(sa.rank[i]);
+        int jrank = *prev(itr),
+            j = sa[jrank];
+        s.erase(next(itr), s.end());
+        ans[i] = j;
+    }
+    for (auto &ai:ans) cout << ai << '\n';
     return 0;
 }
