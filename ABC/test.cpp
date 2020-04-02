@@ -1,14 +1,23 @@
 #include <iostream>
 #include <algorithm>
-#include <set>
+#include <complex>
 
 using namespace std;
 
+struct point_t {
+    complex<double> c;
+    double &x = reinterpret_cast<double*>(&c)[0];
+    double &y = reinterpret_cast<double*>(&c)[1];
+    point_t(double x, double y) :c(x, y) {}
+    point_t(complex<double> c) :c(c) {}
+};
+
 int main() {
-    multiset<long> alist;
-    alist.insert(1);
-    auto first = alist.begin();
-    alist.insert(0);
-    cout << (first == alist.begin()) << '\n';
+    point_t p(1, 2), q(complex<double>{3, 4});
+    cout << p.x << ' ' << p.y << endl;
+    cout << q.x << ' ' << q.y << endl;
+    p = q;
+    cout << p.x << ' ' << p.y << endl;
+    cout << q.x << ' ' << q.y << endl;
     return 0;
 }

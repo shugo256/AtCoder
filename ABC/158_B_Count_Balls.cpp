@@ -9,8 +9,8 @@ using ll = long long;
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    cout << n << '\n';
+    ll n, a, b;
+    cin >> n >> a >> b;
+    cout << (n / (a + b)) * a + min(a, n % (a + b)) << '\n';
     return 0;
 }

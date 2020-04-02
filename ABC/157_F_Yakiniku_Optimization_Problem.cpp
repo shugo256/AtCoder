@@ -4,8 +4,6 @@
 #include <queue>
 #include <string>
 #include <cmath>
-#include <iomanip>
-#include <complex>
 
 using ll = long long;
 
@@ -189,25 +187,28 @@ namespace geometry2d {
 
 } // namespace geometry2d
 
-namespace geo = geometry2d;
+
+struct meat {double x, y, c;};
 
 int main() {
-    int n;
-    cin >> n;
-    vector<geo::circle> cs;
-    for (int i=0; i<n; i++) {
-        geo::point_t p;
-        cin >> p;
-        cs.push_back({p, 0});
+    using namespace geometry2d;
+    int n, k;
+    cin >> n >> k;
+    vector<meat> yakiniku;
+    for (int i=0; i<n; i++)  {
+        meat m; cin >> m.x >> m.y >> m.c;
+        yakiniku.push_back(m);
     }
-    double l = 0, r = 10000;
-    while (r - l > geo::EPS) {
-        double m = (l + r) / 2;
-        for (auto &c:cs) c.r = m;
-        int cnt = geo::count_overlap(cs);
-        if (cnt == n) r = m;
-        else l = m;
+    double l = 0, r = 1e6;
+    while (r - l > EPS) {
+        double t = (l + r) / 2;
+        vector<circle> cs(n);
+        for (int i=0; i<n; i++) {
+            cs[i] = {{yakiniku[i].x, yakiniku[i].y}, t / yakiniku[i].c};
+        }
+        if (count_overlap(cs) >= k) r = t;
+        else l = t;
     }
-    cout << setprecision(15) << fixed << l << '\n';
+    cout << fixed << setprecision(15) << r << '\n';
     return 0;
 }
