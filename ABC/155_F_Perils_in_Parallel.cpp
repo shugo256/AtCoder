@@ -138,14 +138,16 @@ int main() {
     vector<B> seqs;
     while (!pq.empty()) {
         B f = pq.top(), org = f; pq.pop();
-        if (f.p.fi == prev.p.fi) {
+        if (f.p == prev.p) {
+            continue;
+        } else if (f.p.fi == prev.p.fi && f.p.se != prev.p.se) {
             f.p.fi = prev.p.se;
             f.ids ^= prev.ids;
             pq.push(f);
         } else {
             seqs.push_back(f);
+            prev = f;
         }
-        prev = org;
     }
     int j = 0;
     BS ans;
