@@ -9,6 +9,7 @@ using ll = long long;
 using namespace std;
 
 #define MAX 200010
+#define INF (int)(1e9 + 10)
 
 vector<int> G[MAX];
 int a[MAX] = {0};
@@ -16,28 +17,20 @@ int d[MAX];
 
 void dfs(int i, int par, vector<int> &lis) {
     bool push = false;
-    int id, val;
-    auto pp = partition_point(lis.begin(), lis.end(), [&](int x) {
+    auto pp_update = partition_point(lis.begin(), lis.end(), [&](int x) {
         return x < a[i];
     });
-    if (pp == lis.end()) {
-        push = true;
-        lis.push_back(a[i]);
-    } else {
-        id = pp - lis.begin();
-        val = *pp;
-        *pp = a[i];
-    }
-    d[i] = lis.size();
+    int org = *pp_update;
+    *pp_update = a[i];
+    auto pp_end = partition_point(lis.begin(), lis.end(), [&](int x) {
+        return x < INF;
+    });
+    d[i] = pp_end - lis.begin() - 1;
     for (auto &g:G[i]) {
         if (g == par) continue;
         dfs(g, i, lis);
     }
-    if (push) {
-        lis.pop_back();
-    } else {
-        lis[id] = val;
-    }
+    *pp_update = org;
 }
 
 int main() {
@@ -52,7 +45,8 @@ int main() {
         G[ui].push_back(vi);
         G[vi].push_back(ui);
     }
-    vector<int> lis;
+    vector<int> lis(n+1, INF);
+    lis[0] = -INF;
     dfs(0, -1, lis);
     for (int i=0; i<n; i++) {
         cout << d[i] << '\n';
