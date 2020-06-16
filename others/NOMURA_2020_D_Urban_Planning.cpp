@@ -153,6 +153,8 @@ public:
     }
 };
 
+// べき乗
+inline modlong modPow(ll n, ll k) { return modlong(n).pow(k); }
 // コンビネーション
 inline modlong modComb(ll n, ll k) { return modlong(n).comb(k); }
 // 階乗
@@ -164,6 +166,7 @@ ll *modlong::facts = new ll[MAX+1];
 ll *modlong::finvs = new ll[MAX+1];
 
 ll modlong::MOD = (ll)1e9 + 7;
+
 
 
 struct uftree {
@@ -224,9 +227,9 @@ struct uftree {
 int main() {
     int n;
     cin >> n;
-    vector<int> frees, unfrees;
-    set<int> G[n];
+    vector<int> frees;
     uftree uft(n);
+    modlong loops = 0;
     for (int i=0, pi; i<n; i++) {
         cin >> pi;
         if (pi < 0) {
@@ -234,38 +237,25 @@ int main() {
         }
         else {
             pi--;
-            G[i].insert(pi);
-            G[pi].insert(i);
+            if (uft.same(i, pi)) loops++;
             uft.unite(i, pi);
-            unfrees.push_back(i);
         }
     }
     int k = frees.size();
-    modlong ans = 0;
-    modlong all = modlong(n-1).pow(k);
-    for (auto &g:G) ans += g.size();
-    ans /= 2;
-    ans *= all;
-    cerr << ans << '\n';
-    vector<int> united(n, 0);
-    vector<int> united_unfrees(n, 0);
-    for (auto &fi:frees) {
-        united[uft.root(fi)]++;
-    }
-    for (auto &ui:unfrees) {
-        united_unfrees[uft.root(ui)]++;
-    }
-    for (int i=0; i<n; i++) {
-        int si = united[i] + united_unfrees[i];
-        for (int j=0; j<i; j++) {
-            if (united[i] == 0 && united[j] == 0) continue;
-            int sj = united[j] + united_unfrees[j];
-            cerr << i << ' ' << j << ' ' << si << ' ' << sj << '\n';
-            ans += all - (modlong(n - 1) - si).pow(united[j]) 
-                        * (modlong(n - 1) - sj).pow(united[i]) 
-                        * modlong(n - 1).pow(k - united[i] - united[j]);
+    modlong dp[k+1][k+1];
+    fill(dp[0], dp[k+1], 0);
+    dp[0][0] = 1;
+    for (int i=0; i<k; i++) {
+        for (int j=0; j<=i; j++) {
+            dp[i+1][j] += dp[i][j];
+            dp[i+1][j+1] += dp[i][j] * uft.get_size(frees[i]);
         }
     }
-    cout << ans << '\n';
+    modlong extra = loops * modPow(n-1, k);
+    for (auto &fi:frees) extra += modPow(n-1, k-1) * (uft.get_size(fi) - 1);
+    for (int i=2; i<=k; i++) {
+        extra += dp[k][i] * modFact(i - 1) * modPow(n-1, k - i);
+    }
+    cout << modPow(n-1, k) * n - extra << '\n';
     return 0;
 }

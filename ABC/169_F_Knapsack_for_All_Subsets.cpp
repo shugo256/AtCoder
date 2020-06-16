@@ -152,8 +152,6 @@ public:
     }
 };
 
-// べき乗
-inline modlong modPow(ll n, ll k) { return modlong(n).pow(k); }
 // コンビネーション
 inline modlong modComb(ll n, ll k) { return modlong(n).comb(k); }
 // 階乗
@@ -164,31 +162,23 @@ ll *modlong::invs  = new ll[MAX+1];
 ll *modlong::facts = new ll[MAX+1];
 ll *modlong::finvs = new ll[MAX+1];
 
-ll modlong::MOD = (ll)1e9 + 7;
+ll modlong::MOD = (ll)998244353ll;
 
 
 int main() {
-    int n, a, b;
-    cin >> n >> a >> b;
-    modlong dp[n+1][5];
+    int n, s;
+    cin >> n >> s;
+    modlong dp[n+1][s+1];
     fill(dp[0], dp[n+1], 0);
-    if (a > b) swap(a, b);
-    dp[0][1] = 1;
-    for (int i=0; i<n; i++) {
-        dp[i+1][0] += dp[i][0];
-        dp[i+1][0] += dp[i][1];
-        dp[i+1][1] += dp[i][0];
-        dp[i+1][1] += dp[i][1];
-        for (int j=i+b; j<=n; j++) {
-            dp[j][2] += (dp[i][1] - dp[i][3]) * (j - i - a + 1 + 1);
+    dp[0][0] = 1;
+    for (int i=0, ai; i<n; i++) {
+        cin >> ai;
+        for (int j=0; j<=s; j++) {
+            dp[i+1][j] += dp[i][j] * 2;
+            if (j + ai <= s)
+                dp[i+1][j + ai] += dp[i][j];
         }
-        dp[i+1][3] += dp[i][2];
-        dp[i+1][3] += dp[i][3];
-        dp[i+1][3] += dp[i][4];
-        dp[i+1][4] += dp[i][3];
-        dp[i+1][4] += dp[i][4];
-        cerr << dp[i+1][2] << ' ' << dp[i+1][3] << ' ' << dp[i+1][4] << '\n';
     }
-    cout << dp[n][2] + dp[n][3] + dp[n][4] + 1 << '\n';
+    cout << dp[n][s] << '\n';
     return 0;
 }
