@@ -43,16 +43,9 @@ int main() {
         }
     }
     d = 3;
-    set<int> left{0, 1, 2};
-    dance[0] ^= ((cnt - applied[0]) & 1) * 3;
-    dance[1] ^= ((cnt - applied[1]) & 1) * 3;
-    dance[2] ^= ((cnt - applied[2]) & 1) * 3;
-    dance[0] %= 3;
-    dance[1] %= 3;
-    dance[2] %= 3;
     for (auto &di:dance) cerr << di << ' ';
     cerr << '\n';
-    for (int i=3; i<pow3[n]; i++) {
+    for (int i=0; i<pow3[n]; i++) {
         dance[i] ^= ((cnt - applied[i]) & 1) * 3;
         dance[i] = dance[i % d] + dance[i] * d;
         if (i + 1 >= d * 3) d *= 3;
@@ -61,8 +54,15 @@ int main() {
     for (auto &di:dance) cerr << di << ' ';
     cerr << '\n';
     for (int i=pow3[n]-1; i>=0; i--) {
-        if (left.count(dance[i] + d))   dance[i] += d;
-        else if (left.count(dance[i] + 2*d)) dance[i] += 2*d;
+        if (left.count(dance[i]) == 0) {
+            for (int di = d; d <= n; di++) {
+                if (left.count(dance[i] + d)) {
+                    dance[i] += d;
+
+                }
+                else if (left.count(dance[i] + 2*d)) dance[i] += 2*d;
+            }
+        }
         left.erase(dance[i]);
         if (i * 3 == d) d /= 3;
     }
