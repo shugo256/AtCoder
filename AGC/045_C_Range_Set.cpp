@@ -170,25 +170,58 @@ ll modlong::MOD = (ll)1e9 + 7;
 int main() {
     int n, a, b;
     cin >> n >> a >> b;
-    modlong dp[n+1][5];
-    fill(dp[0], dp[n+1], 0);
-    if (a > b) swap(a, b);
-    dp[0][1] = 1;
-    for (int i=0; i<n; i++) {
-        dp[i+1][0] += dp[i][0];
-        dp[i+1][0] += dp[i][1];
-        dp[i+1][1] += dp[i][0];
-        dp[i+1][1] += dp[i][1];
-        for (int j=i+b; j<=n; j++) {
-            dp[j][2] += (dp[i][1] - dp[i][3]) * (j - i - a + 1 + 1);
-        }
-        dp[i+1][3] += dp[i][2];
-        dp[i+1][3] += dp[i][3];
-        dp[i+1][3] += dp[i][4];
-        dp[i+1][4] += dp[i][3];
-        dp[i+1][4] += dp[i][4];
-        cerr << dp[i+1][2] << ' ' << dp[i+1][3] << ' ' << dp[i+1][4] << '\n';
+    if (a > b) {
+        // 0が短い方、1が長い方担当
+        std::swap(a, b);
     }
-    cout << dp[n][2] + dp[n][3] + dp[n][4] + 1 << '\n';
+    // top[i][j] = 頂上にくるべき長さiの文字列で、最後jで終わる物
+    std::vector top(2, vector(a + b, vector(2, modlong())));
+    top[0][a][0] = 1;
+    top[1][1][1] = 1;
+    for (int i=0; i<b; i++) {
+        for (int j=0; j<2; j++) {
+                top[j][i+1][0] += top[j][i][0];
+                top[j][i+a][0] += top[j][i][1];
+                top[j][i+1][1] += top[j][i][0];
+                top[j][i+1][1] += top[j][i][1];
+        }
+    }
+    for (auto &ti:top) {
+        std::cerr << ti[0] << ' ' << ti[1] << std::endl;
+    }
+    std::cerr << std::endl;
+
+    // left[i][j] =  長さiの0がa文字続かず、1がb文字続かない物の中で、最後jで終わる物の数
+    // 多分a = bの場合はこっちだけ使う
+    std::vector left(n+1, vector(2, modlong()));
+    left[0][0] = 1, left[0][1] = 1;
+    for (int i=0; i<n; i++) {
+        for (int j=1; j<a && i+j<=n; j++) {
+            left[i+j][0] += left[i][1];
+        }
+        for (int j=1; j<b && i+j<=n; j++) {
+            left[i+j][1] += left[i][0];
+        }
+    }
+    left[0][1] = 0;
+
+    for (auto &ti:left) {
+        std::cerr << ti[0] << ' ' << ti[1] << std::endl;
+    }
+    std::cerr << std::endl;
+
+    modlong ans = 0;
+    for (int i=0; i<n; i++) {
+        if (a < b) {
+            for (int j=b; j<a+b && i+j<=n; j++) {
+                ans += left[i][0] * (top[1][i][0] + top[1][i][1]) * modPow(2, n - i - j);
+                ans += left[i][1] * (top[0][i][0] + top[0][i][1]) * modPow(2, n - i - j);
+            }
+        } else {
+            if (i + b <= n)
+                ans += left[i][0] * 2 * modPow(2, n - i - b);
+        }
+    }
+    cout << ans << '\n';
     return 0;
 }
