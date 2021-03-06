@@ -186,8 +186,8 @@ int main() {
                 top[j][i+1][1] += top[j][i][1];
         }
     }
-    for (auto &ti:top) {
-        std::cerr << ti[0] << ' ' << ti[1] << std::endl;
+    for (int i=0; i < a + b; i++) {
+        std::cerr << top[0][i][0] + top[0][i][1] << ' ' << top[1][i][0] + top[1][i][1] << std::endl;
     }
     std::cerr << std::endl;
 
@@ -214,8 +214,8 @@ int main() {
     for (int i=0; i<n; i++) {
         if (a < b) {
             for (int j=b; j<a+b && i+j<=n; j++) {
-                ans += left[i][0] * (top[1][i][0] + top[1][i][1]) * modPow(2, n - i - j);
-                ans += left[i][1] * (top[0][i][0] + top[0][i][1]) * modPow(2, n - i - j);
+                ans += left[i][0] * (top[1][j][0] + top[1][j][1]) * modPow(2, n - i - j);
+                ans += left[i][1] * (top[0][j][0] + top[0][j][1]) * modPow(2, n - i - j);
             }
         } else {
             if (i + b <= n)

@@ -10,8 +10,8 @@
 using ll = long long;
 
 int main() {
-    int n;
-    std::cin >> n;
-    std::cout << n << '\n';
+    int v, t, s, d;
+    std::cin >> v >> t >> s >> d;
+    std::cout << (v*t <= d && d <= v*s ? "No" : "Yes") << '\n';
     return 0;
 }
