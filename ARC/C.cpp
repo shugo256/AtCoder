@@ -12,7 +12,7 @@ using ll = long long;
 using namespace std;
 
 #include <cassert>
-#define MAX 2000000  // 階乗をいくつまで計算するか
+#define MAX 20  // 階乗をいくつまで計算するか
 
 class modlong {
     ll val;
@@ -169,29 +169,25 @@ ll *modlong::finvs = new ll[MAX+1];
 
 ll modlong::MOD = 998244353ll;
 
+using P = std::pair<modlong, modlong>;
+#define fi first
+#define se second
+
 
 int main() {
-    int H, W;
-    std::cin >> H >> W;
-    int h1, w1, h2, w2;
-    std::cin >> h1 >> w1 >> h2 >> w2;
-    if (h1 > h2) std::swap(h1, h2);
-    if (w1 > w2) std::swap(w1, w2);
-    int hm = h2 - h1, wm = w2 - w1;
-    h1--; h2 = H - h2;
-    w1--; w2 = W - w2;
-    std::cerr << h1 << ' ' << h2 << ' ' <<hm << std::endl;
-    std::cerr << w1 << ' ' << w2 << ' ' <<wm << std::endl;
-    modlong order = modComb(h1 + h2 + w1 + w2, h1) 
-                  * modComb(h2 + w1 + w2, h2)
-                  * modComb(w1 + w2, w1);
-    modlong kaisuSum = 0, bunbo = 0, left = H + W;
-    for (int i = 0; i <= h1 + h2 + w1 + w2; i++) {
-        modlong kinds = order.comb(i) * (hm + wm) / (left - i);
-        bunbo += kinds;
-        kaisuSum += kinds * (i + 1);
-        std::cerr << kinds << std::endl;
+    int n, m;
+    std::cin >> n >> m;
+    modlong ans = modPow(m, n) * n;
+    std::vector dp(m, modlong());
+    std::vector pows(m, modlong(1));
+    for (int i=0; i<n; i++) {
+        modlong left = modPow(m, n - i - 1);
+        for (int j=0; j<m; j++) {
+            ans -= dp[j] * left;
+            dp[j] = dp[j] * m + pows[j];
+            pows[j] *= (m - j - 1);
+        }
     }
-    std::cout << kaisuSum / bunbo << '\n';
+    std::cout << ans << '\n';
     return 0;
 }

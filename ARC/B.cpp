@@ -9,10 +9,10 @@
 
 using ll = long long;
 
-using namespace std;
-
 #include <cassert>
-#define MAX 2000000  // 階乗をいくつまで計算するか
+#define MAX 20  // 階乗をいくつまで計算するか
+
+using namespace std;
 
 class modlong {
     ll val;
@@ -169,29 +169,35 @@ ll *modlong::finvs = new ll[MAX+1];
 
 ll modlong::MOD = 998244353ll;
 
+#include <set>
+
 
 int main() {
-    int H, W;
-    std::cin >> H >> W;
-    int h1, w1, h2, w2;
-    std::cin >> h1 >> w1 >> h2 >> w2;
-    if (h1 > h2) std::swap(h1, h2);
-    if (w1 > w2) std::swap(w1, w2);
-    int hm = h2 - h1, wm = w2 - w1;
-    h1--; h2 = H - h2;
-    w1--; w2 = W - w2;
-    std::cerr << h1 << ' ' << h2 << ' ' <<hm << std::endl;
-    std::cerr << w1 << ' ' << w2 << ' ' <<wm << std::endl;
-    modlong order = modComb(h1 + h2 + w1 + w2, h1) 
-                  * modComb(h2 + w1 + w2, h2)
-                  * modComb(w1 + w2, w1);
-    modlong kaisuSum = 0, bunbo = 0, left = H + W;
-    for (int i = 0; i <= h1 + h2 + w1 + w2; i++) {
-        modlong kinds = order.comb(i) * (hm + wm) / (left - i);
-        bunbo += kinds;
-        kaisuSum += kinds * (i + 1);
-        std::cerr << kinds << std::endl;
+    int n;
+    std::cin >> n;
+    std::vector<int> f(n);
+    for (int i=0; i<n; i++) {
+        std::cin >> f[i];
+        f[i]--;
     }
-    std::cout << kaisuSum / bunbo << '\n';
+    int sets = 0;
+    std::vector used(n, false);
+    for (int i=0; i<n; i++) {
+        if (used[i]) continue;
+        used[i] = true;
+        std::set<int> visited;
+        int cur = i;
+        visited.insert(i);
+        while (true) {
+            cur = f[cur];
+            if (used[cur]) {
+                if (visited.count(cur)) sets++;
+                break;
+            }
+            visited.insert(cur);
+            used[cur] = true;
+        }
+    }
+    std::cout << modPow(2, sets) - 1 << '\n';
     return 0;
 }
