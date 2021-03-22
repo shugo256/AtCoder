@@ -34,9 +34,7 @@ int main() {
     for (int i=0; i<q; i++) {
         ll xi;
         std::cin >> xi;
-        amax(xi, begin);
-        amin(xi, end);
-        std::cout << xi + offset << '\n';
+        std::cout << std::clamp(xi, begin, end) + offset << '\n';
     }
     return 0;
 }
